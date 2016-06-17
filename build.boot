@@ -11,8 +11,8 @@
                  [weasel                    "0.7.0"      :scope "test"]
                  [metosin/reagent-dev-tools "0.1.0"      :scope "test"]
                  [deraen/boot-less          "0.5.0"      :scope "test"]
-                 [binaryage/devtools        "0.7.0"      :scope "test"] 
-                 [cljsjs/mui "0.1.21-0"]
+                 [binaryage/devtools        "0.7.0"      :scope "test"]
+                 [cljsjs/material "1.1.3-1"]
                  [org.clojure/clojurescript "1.9.36"]
                  [reagent "0.6.0-alpha2"]
                  [re-frame "0.7.0"]
@@ -51,7 +51,7 @@
 (deftask development []
   (task-options! cljs   {:optimizations :none
                          :source-map true}
-                 reload {:on-jsload 'respa.app/render}
+                 reload {:on-jsload 'respa.core/render}
                  less   {:source-map  true})
   identity)
 

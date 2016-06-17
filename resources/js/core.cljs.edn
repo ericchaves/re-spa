@@ -1,0 +1,3 @@
+{:require  [respa.core]
+ :init-fns [respa.core/main]
+ :compiler-options {:asset-path "js/core.out"}}
