@@ -1,0 +1,3 @@
+{:require  [respa.app]
+ :init-fns [respa.app/init]
+ :compiler-options {:asset-path "js/app.out"}}
