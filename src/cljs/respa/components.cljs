@@ -1,13 +1,19 @@
 (ns respa.components
   "first class components
-   - MAY contain some logic/behavior
-   - re-frame subscriptions or dispatchs SHOULD occur here most of the time
-   - for temporary local state (like handling form inputs) use a temporary ratom"
+   - MAY contain some logic/behavior.
+   - re-frame subscriptions or dispatchs SHOULD occur here most of the time.
+   - use a local ratom for local validations or temporary data that won't be
+     persisted in app-db, like form validations and such."
   (:require [reagent.core :as r :refer [atom]]
             [re-frame.core :refer [subscribe dispatch dispatch-sync]]
             [respa.ui :as ui]
             [cljsjs.material]
+            [respa.db :as db]
+            [schema.core :as s :include-macros true]
             [clojure.string :refer [split blank?]]))
+
+(when ^boolean goog.DEBUG
+  (enable-console-print!))
 
 (defn home-page []
   (let [current-user (subscribe [:current-user])
@@ -48,16 +54,17 @@
                 }]))
 
 (defn login-page []
-  (let [state (r/atom {:username ""})
-        username-valid? #(not (blank? (:username %)))
+  (let [state (r/atom {:username ""}) 
         on-change #(swap! state assoc :username (-> % .-target .-value))
         on-click  #(let [user @state]
-                     (if (username-valid? user)
-                       (comp 
+                     (try
+                       ((s/validate db/USER user)
                         (dispatch [:set-current-user user])
-                        (dispatch [:navigate-to :home]))
-                       (ui/toast {:message "Please inform your name"
-                                  :timeout 1750})))]
+                        (dispatch [:navigate-to :home])) 
+                       (catch :default e
+                         (println "ex:" e)
+                         (ui/toast {:message "Please inform your full name"
+                                    :timeout 1750}))))]
     [:div.mdl-grid.align-center
      [:div.demo-card-wide.mdl-card.mdl-shadow--2p
       [:div.mdl-card__title

@@ -5,7 +5,8 @@
   (:require [cljsjs.material]))
 
 
-(enable-console-print!)
+(when ^boolean goog.DEBUG 
+  (enable-console-print!))
 
 ;; Navigation ui
 
